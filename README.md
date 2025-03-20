@@ -1,4 +1,4 @@
-# Instagram Toolkit
+# SilverInstaEye - Instagram OSINT Tool
 
 ## Overview
 Instagram Toolkit is a powerful Python-based tool designed for extracting valuable information from Instagram accounts. With functionalities including downloading posts, retrieving followers/following lists, collecting comments, and fetching email and phone details (where possible), this tool is ideal for research, analysis, and data collection.

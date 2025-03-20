@@ -1,4 +1,4 @@
-# SilverInstaEye - Instagram OSINT Tool
+# SilverInstaEye - Instagram OSINT Tool 🔍
 
 ## Overview
 SilverInstaEye is a comprehensive OSINT tool for Instagram. It gathers extensive information about the target user.Support my GitHub repo by giving it a star! ⭐

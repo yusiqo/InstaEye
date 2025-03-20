@@ -9,8 +9,8 @@ SilverInstaEye is a comprehensive OSINT tool for Instagram. It gathers extensive
 - Download Posts: Bulk download all available posts from a target account.
 - Collect Comments: Extract and store comments from posts.
 - Retrieve Followers & Following Lists: Export lists of followers and the accounts being followed.
-- Download Stories Anonymously: Fetch and save all available stories from a target profile without revealing identity.
-- Identify Posts with User Comments (Dorking): Extract a list of posts where a specific target has commented.
+- Download Stories Anonymously: Downloading the target's stories anonymously.
+- Identify Posts with User Comments (Dorking): Extracting the posts that the target has commented on.
 - Extract Geolocation from Posts: Retrieve and analyze geolocation data embedded in posts.
 - Download Instagram Highlights: Save all highlight stories from a profile.
 ```

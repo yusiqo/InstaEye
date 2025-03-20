@@ -15,17 +15,11 @@ Instagram Toolkit is a powerful Python-based tool designed for extracting valuab
 - **Download Instagram Highlights:** Save all highlight stories from a profile.
 - **Retrieve Masked Contact Information:** Extract and display phone numbers and email addresses in a masked format (e.g., +1******1234, e******@gmail.com).
 
-## Requirements
-Ensure you have the following dependencies installed:
-```sh
-pip install termcolor instagrapi requests beautifulsoup4 colorama
-```
-
 ## Installation & Usage
 1. Clone the repository:
    ```sh
-   git clone https://github.com/your-repo/instagram-toolkit.git
-   cd instagram-toolkit
+   git clone https://github.com/silverxpymaster/SilverInstaEye.git
+   cd SilverInstaEye
    ```
 2. Install dependencies:
    ```sh
@@ -33,7 +27,7 @@ pip install termcolor instagrapi requests beautifulsoup4 colorama
    ```
 3. Run the tool:
    ```sh
-   python tool.py
+   python3 silverinstaeye.py
    ```
 
 ## Configuration

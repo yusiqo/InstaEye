@@ -5,7 +5,7 @@ SilverInstaEye is a comprehensive OSINT tool for Instagram. It gathers extensive
 
 ## Features
 ```sh
-- Extract Phone number or Mail adress: The target 's phone number or email address is displayed (in a starred format).
+- Extract Phone number or Mail adress: The target phone number or email address is displayed (in a starred format).
 - Download Posts: Bulk download all available posts from a target account.
 - Collect Comments: Extract and store comments from posts.
 - Retrieve Followers & Following Lists: Export lists of followers and the accounts being followed.

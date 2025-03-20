@@ -4,6 +4,7 @@
 SilverInstaEye is a comprehensive OSINT tool for Instagram. It gathers extensive information about the target user.Support my GitHub repo by giving it a star! ⭐
 
 ## Features
+```sh
 - **Extract Phone number or Mail adress:** The target's phone number or email address is displayed (in a starred format).
 - **Download Posts:** Bulk download all available posts from a target account.
 - **Collect Comments:** Extract and store comments from posts.
@@ -12,6 +13,7 @@ SilverInstaEye is a comprehensive OSINT tool for Instagram. It gathers extensive
 - **Identify Posts with User Comments (Dorking):** Extract a list of posts where a specific target has commented.
 - **Extract Geolocation from Posts:** Retrieve and analyze geolocation data embedded in posts.
 - **Download Instagram Highlights:** Save all highlight stories from a profile.
+```
 ## Installation & Usage
 1. Clone the repository:
    ```sh

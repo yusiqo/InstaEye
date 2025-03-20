@@ -5,7 +5,7 @@ SilverInstaEye is a comprehensive OSINT tool for Instagram. It gathers extensive
 
 ## Features
 ```sh
-- Basic information - Number and email in star form, ID, username, number of posts, bio, number of followers, whether the account is private or public, whether it is a business account, etc..
+- Basic information - Number and email (masked format), ID, username, number of posts, bio, number of followers, whether the account is private or public, whether it is a business account, etc..
 - Download Posts: Bulk download all available posts from a target account.
 - Collect Comments: Extract and store comments from posts.
 - Retrieve Followers & Following Lists: Export lists of followers and the accounts being followed.

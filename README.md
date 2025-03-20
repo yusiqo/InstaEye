@@ -1,7 +1,7 @@
 # SilverInstaEye - Instagram OSINT Tool
 
 ## Overview
-SilverInstaEye is a comprehensive OSINT tool for Instagram. It gathers extensive information about the target user. 
+SilverInstaEye is a comprehensive OSINT tool for Instagram. It gathers extensive information about the target user.Support my GitHub repo by giving it a star! ⭐
 
 ## Features
 - **Extract Phone number or Mail adress:** The target's phone number or email address is displayed (in a starred format).

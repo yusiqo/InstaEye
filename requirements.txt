@@ -1,0 +1,5 @@
+termcolor
+instagrapi
+requests
+beautifulsoup4
+colorama

@@ -373,7 +373,7 @@ def main():
     parser.add_argument('-u', '--username', required=True, help="Instagram username to target")
     parser.add_argument('-informations', action='store_true', help="Fetch user information(number,mail,id,bio, etc...)")
     parser.add_argument('-posts', action='store_true', help="Download user posts")
-    parser.add_argument('-stories', action='store_true', help="Download user stories")
+    parser.add_argument('-stories', action='store_true', help="Download user stories(anonim)")
     parser.add_argument('-highlights', action='store_true', help="Download user highlights")
     parser.add_argument('-dorks', action='store_true', help="Collect information using Google dorks")
     parser.add_argument('-comments', action='store_true', help="Collect comments from user posts")

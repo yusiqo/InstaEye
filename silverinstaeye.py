@@ -1,9 +1,12 @@
 from termcolor import colored
 from instagrapi import Client
+from googlesearch import search
 import os
 import time
 import requests
 import json
+import re
+import argparse
 from bs4 import BeautifulSoup
 from colorama import Fore
 
@@ -15,7 +18,7 @@ print(colored("""⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ╚════██║██║██║    ╚██╗ ██╔╝██╔══╝  ██╔══██╗██║██║╚██╗██║╚════██║   ██║   ██╔══██║██╔══╝    ╚██╔╝  ██╔══╝  
 ███████║██║███████╗╚████╔╝ ███████╗██║  ██║██║██║ ╚████║███████║   ██║   ██║  ██║███████╗   ██║   ███████╗
 ╚══════╝╚═╝╚══════╝ ╚═══╝  ╚══════╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚══════╝   ╚═╝   ╚══════╝
-                                                                                                          ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                                                                                                       ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠀⠀⠀⠀⠀⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⡇⠀⠀⢰⡆⢘⣆⠀⠀⡆⠀⢸⠀⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⠀⣆⣧⡤⠾⢷⡚⠛⢻⣏⢹⡏⠉⣹⠟⡟⣾⠳⣼⢦⣀⣰⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -31,7 +34,8 @@ print(colored("""⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⠺⠤⣄⣠⡏⠀⠀⡿⠀⠀⠘⡾⠀⢀⣈⡧⠴⠒⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠙⠒⠓⠒⠒⠚⠛⠉⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 
-                                Author: SilverX     Tg: t.me/silverxvip
+
+                          Author: SilverX                Tg: t.me/silverxvip
 """,'red'))
 
 Qara = '\033[30m'
@@ -91,94 +95,82 @@ def email_ve_telefon_al(api_url, hedef_istifadeci):
 
 def postlari_yukle(cl, hedef_istifadeci):
     try:
-        icaze = input(
-            f"{Aq}[ {Yasil}? {Aq}] {hedef_istifadeci} Do you want to download all of the user's posts? (Yes/No): ").lower()
-        if icaze != 'Yes':
-            print(f"{Aq}[ {Sari}! {Aq}] Posts were not loaded.")
-            return
-
         user = cl.user_info_by_username(hedef_istifadeci)
 
         if user.is_private:
-            print(f"{Aq}[ {Sari}! {Aq}] {hedef_istifadeci} This is a personal account.")
+            print(f"[!] {hedef_istifadeci} This is a personal account.")
             following_list = cl.user_following(cl.user_id)
             if user.pk not in following_list:
-                print(f"{Aq}[ {Qirmizi}! {Aq}] {hedef_istifadeci} This is a personal account, and you are not following it.")
+                print(f"[X] {hedef_istifadeci} This is a personal account, and you are not following it.")
                 return
             else:
-                print(f"{Aq}[ {Yasil}+ {Aq}] {hedef_istifadeci} This is a personal account, but it is being followed. The posts are being loaded...")
+                print(f"[+] {hedef_istifadeci} This is a personal account, but it is being followed. The posts are being loaded...")
 
-        media_list = cl.user_medias(user.pk, 0)
+        media_list = cl.user_medias(user.pk, amount=0)
 
         if not media_list:
-            print(f"{Aq}[ {Sari}! {Aq}] {hedef_istifadeci} The user has no posts.")
+            print(f"[!] {hedef_istifadeci} The user has no posts.")
             return
 
         qovluq_adi = hedef_istifadeci
-        if not os.path.exists(qovluq_adi):
-            os.mkdir(qovluq_adi)
+        os.makedirs(qovluq_adi, exist_ok=True)
 
-        print(f"{Aq}[ {Yasil}+ {Aq}] {hedef_istifadeci} The user's posts are being loaded..")
+        print(f"[+] {hedef_istifadeci} The user's posts are being loaded..")
 
         for idx, media in enumerate(media_list):
             try:
+                media_url = None
                 if media.media_type == 1:
                     media_url = media.thumbnail_url
-                else:
+                    dosya_adi = f"post_{idx + 1}.jpg"
+                elif media.media_type == 2:
                     media_url = media.video_url
-
+                    dosya_adi = f"post_{idx + 1}.mp4"
+                
                 if not media_url:
                     raise ValueError(f"Post {idx + 1} Not Uploaded")
+                
+                fayl_yolu = os.path.join(qovluq_adi, dosya_adi)
 
-                fayl_yolu = os.path.join(qovluq_adi,
-                                         f"post_{idx + 1}.jpg" if media.media_type == 1 else f"post_{idx + 1}.mp4")
-
+                response = requests.get(media_url, stream=True)
+                response.raise_for_status()
+                
                 with open(fayl_yolu, 'wb') as fayl:
-                    fayl.write(requests.get(media_url).content)
+                    for chunk in response.iter_content(chunk_size=8192):
+                        fayl.write(chunk)
 
-                print(f"{Aq}[ {Yasil}+ {Aq}] Post {idx + 1} : {fayl_yolu}")
+                print(f"[+] Post {idx + 1} : {fayl_yolu}")
                 time.sleep(1)
             except Exception as e:
-                print(f"{Aq}[ {Qirmizi}! {Aq}] Post {idx + 1} - An error occurred while uploading the post.: {str(e)}")
+                print(f"[X] Post {idx + 1} - An error occurred while uploading the post.: {str(e)}")
 
-        print(
-            f"{Aq}[ {Yasil}+ {Aq}] {hedef_istifadeci} All posts of the user are stored in folder '{qovluq_adi}'")
+        print(f"[+] {hedef_istifadeci} All posts of the user are stored in folder '{qovluq_adi}'")
 
     except Exception as e:
-        print(f"{Aq}[ {Qirmizi}! {Aq}] An error occurred while uploading the posts: {str(e)}")
+        print(f"[X] An error occurred while uploading the posts: {str(e)}")
 
 
 def post_yorumlari_topla(cl, hedef_istifadeci):
     try:
-        icaze = input(
-            f"{Aq}[ {Yasil}? {Aq}] {hedef_istifadeci} Do you want to collect comments from the user's posts? (Yes/No): ").lower()
-        if icaze != 'Yes':
-            print(f"{Aq}[ {Sari}! {Aq}] Comments were not collected.")
-            return
-
         user = cl.user_info_by_username(hedef_istifadeci)
-        media_list = cl.user_medias(user.pk, 0)
+        media_list = cl.user_medias(user.pk, amount=0)
 
         if not media_list:
-            print(f"{Aq}[ {Sari}! {Aq}] {hedef_istifadeci} The user has no posts.")
+            print(f"[!] {hedef_istifadeci} The user has no posts.")
             return
 
         yorum_fayl_adi = f"{hedef_istifadeci}_comments.txt"
         with open(yorum_fayl_adi, 'w', encoding='utf-8') as fayl:
-            fayl.write(f"============================== {hedef_istifadeci} Comments ==============================\n")
+            fayl.write(f"============================== {hedef_istifadeci} Comments ==============================")
 
-            print(f"{Aq}[ {Yasil}+ {Aq}] {hedef_istifadeci} Comments are being collected from the user's posts...")
+            print(f"[+] {hedef_istifadeci} Comments are being collected from the user's posts...")
 
             for idx, media in enumerate(media_list):
                 try:
-                    yorumlar = cl.media_comments(media.pk)
+                    yorumlar = cl.media_comments(media.pk, amount=0)
 
                     if not yorumlar:
-                        print(f"{Aq}[ {Sari}! {Aq}] Post {idx + 1} not have comment.")
-                        continue
-
-                    if len(yorumlar) > 20:
-                        print(f"{Aq}[ {Sari}! {Aq}] Post {idx + 1} There are too many comments (more than 20), they were not written.")
+                        print(f"[!] Post {idx + 1} does not have comments.")
                         continue
 
                     fayl.write(f"Post {idx + 1}:")
@@ -186,59 +178,41 @@ def post_yorumlari_topla(cl, hedef_istifadeci):
                         fayl.write(f"  - {yorum.user.username}: {yorum.text}\n")
                     fayl.write("\n")
 
-                    print(f"{Aq}[ {Yasil}+ {Aq}] Post {idx + 1} comments collected.")
-
+                    print(f"[+] Post {idx + 1} comments collected.")
                 except Exception as e:
-                    print(f"{Aq}[ {Qirmizi}! {Aq}] Post {idx + 1} An error occurred while loading comments: {str(e)}")
+                    print(f"[X] Post {idx + 1} An error occurred while loading comments: {str(e)}")
 
-        print(f"\n{Aq}[ {Yasil}+ {Aq}] All comments were written to the '{yorum_fayl_adi}' file.")
+        print(f"[+] All comments were written to the '{yorum_fayl_adi}' file.")
     except Exception as e:
-        print(f"{Aq}[ {Qirmizi}! {Aq}] An error occurred while uploading the comments: {str(e)}")
+        print(f"[X] An error occurred while uploading the comments: {str(e)}")
 
-
-def izləyiciləri_və_izlədikləri_yazdır(cl, hedef_istifadeci):
+def izleyicileri_ve_izlediklerini_yazdir(cl, hedef_istifadeci, amount=0):
     try:
-        icaze = input(
-            f"{Aq}[ {Yasil}? {Aq}] {hedef_istifadeci} Do you want to extract the people followed by user and their followers? (Yes/No): ").lower()
-        if icaze != 'Yes':
-            print(f"{Aq}[ {Sari}! {Aq}] .")
-            return
-
         user = cl.user_info_by_username(hedef_istifadeci)
-        print(f"{Aq}[ {Yasil}+ {Aq}] {hedef_istifadeci} Followers and Following collected...")
+        print(f"{Aq}[ {Yasil}+ {Aq}] Collecting followers and following of {hedef_istifadeci}...")
 
-        izləyicilər = cl.user_followers(user.pk)
-        izləyicilər_fayl = f"{hedef_istifadeci}_followers.txt"
-        with open(izləyicilər_fayl, 'w', encoding='utf-8') as fayl:
-            fayl.write(
-                f"============================== {hedef_istifadeci} Followers ==============================\n")
-            for idx, (key, follower) in enumerate(izləyicilər.items(), start=1):
+        izleyiciler = cl.user_followers(user.pk, amount=amount)
+        izleyiciler_fayl = f"{hedef_istifadeci}_followers.txt"
+        with open(izleyiciler_fayl, 'w', encoding='utf-8') as fayl:
+            fayl.write(f"============================== {hedef_istifadeci} Followers ==============================\n")
+            for idx, follower in enumerate(izleyiciler.values(), start=1):
                 fayl.write(f"{idx}. {follower.username}\n")
-        print(
-            f"{Aq}[ {Yasil}+ {Aq}] Followers of {hedef_istifadeci} have been written to the '{izləyicilər_fayl}' file.")
+        print(f"{Aq}[ {Yasil}+ {Aq}] Followers of {hedef_istifadeci} saved to '{izleyiciler_fayl}'.")
 
-        izlədikləri = cl.user_following(user.pk)
-        izlədikləri_fayl = f"{hedef_istifadeci}_following.txt"
-        with open(izlədikləri_fayl, 'w', encoding='utf-8') as fayl:
-            fayl.write(
-                f"============================== {hedef_istifadeci} Following ==============================\n")
-            for idx, (key, following) in enumerate(izlədikləri.items(), start=1):
+        izledikleri = cl.user_following(user.pk, amount=amount)
+        izledikleri_fayl = f"{hedef_istifadeci}_following.txt"
+        with open(izledikleri_fayl, 'w', encoding='utf-8') as fayl:
+            fayl.write(f"============================== {hedef_istifadeci} Following ==============================\n")
+            for idx, following in enumerate(izledikleri.values(), start=1):
                 fayl.write(f"{idx}. {following.username}\n")
-        print(
-            f"{Aq}[ {Yasil}+ {Aq}] The people followed by {hedef_istifadeci} have been written to the '{izlədikləri_fayl}' file.")
+        print(f"{Aq}[ {Yasil}+ {Aq}] Following of {hedef_istifadeci} saved to '{izledikleri_fayl}'.")
 
     except Exception as e:
-        print(f"{Aq}[ {Qirmizi}! {Aq}] An error occurred while loading the followers and the people they follow: {str(e)}")
+        print(f"{Aq}[ {Qirmizi}! {Aq}] An error occurred while fetching followers and following: {str(e)}")
 
 
 def storiləri_yukle(cl, hedef_istifadeci):
     try:
-        icaze = input(
-            f"{Aq}[ {Yasil}? {Aq}] Do you want to download all stories of {hedef_istifadeci}? (Yes/No): ").lower()
-        if icaze != 'beli':
-            print(f"{Aq}[ {Sari}! {Aq}] The stories were not downloaded.")
-            return
-
         user = cl.user_info_by_username(hedef_istifadeci)
 
         if user.is_private:
@@ -286,52 +260,26 @@ def storiləri_yukle(cl, hedef_istifadeci):
 def dorkla_melumat_topla(hedef_istifadeci):
     google_dork = f"site:instagram.com intext:{hedef_istifadeci}"
 
-    icaze = input(f"{Aq}[ {Yasil}? {Aq}] Do you want to collect information for {hedef_istifadeci} using Google dork? (Yes/No): ").lower()
-
-    if icaze != 'Yes':
-        print(f"{Aq}[ {Sari}! {Aq}] Information was not collected from the dork.")
-        return
-
-    google_url = f"https://www.google.com/search?q={google_dork}"
-
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-    }
-
     try:
-        response = requests.get(google_url, headers=headers)
-        response.raise_for_status()
-
-        soup = BeautifulSoup(response.text, 'html.parser')
-
-        links = []
-        for item in soup.find_all('a', href=True):
-            link = item['href']
-            if link.startswith("https://www.instagram.com/"):
-                links.append(link)
+        links = [url for url in search(google_dork, num_results=10, unique=True) if "https://www.instagram.com/" in url]
 
         if not links:
-            print(f"{Aq}[ {Sari}! {Aq}] No search results were found.")
+            print("[!] Heç bir nəticə tapılmadı.")
             return
 
         fayl_adi = f"{hedef_istifadeci}_dork_links.txt"
         with open(fayl_adi, 'w', encoding='utf-8') as file:
-            file.write(f"Links found using Google dork :\n")
+            file.write("The following Instagram links were found:\n")
             for link in links:
                 file.write(link + '\n')
 
-        print(f"{Aq}[ {Yasil}+ {Aq}] All found links have been written to the '{fayl_adi}' file.")
+        print(f"[+] The results have been written to the file'{fayl_adi}'")
 
-    except requests.RequestException as e:
-        print(f"{Aq}[ {Qirmizi}! {Aq}] An error occurred during the Google search: {e}")
+    except Exception as e:
+        print(f"[!] An error occurred: {e}")
 
 def geo_melumatlari_topla(cl, hedef_istifadeci):
     try:
-        icaze = input(f"{Aq}[ {Yasil}? {Aq}] Do you want to collect geo data from the posts of {hedef_istifadeci}? (Yes/No): ").lower()
-        if icaze != 'Yes':
-            print(f"{Aq}[ {Sari}! {Aq}] Geo data was not collected.")
-            return
-
         user = cl.user_info_by_username(hedef_istifadeci)
         try:
             media_list = cl.user_medias_v1(user.pk, 20)
@@ -384,12 +332,7 @@ def geo_melumatlari_topla(cl, hedef_istifadeci):
         print(f"{Aq}[ {Qirmizi}! {Aq}] An unexpected error occurred.")
 
 def highlightlari_yukle(cl, hedef_istifadeci):
-    try:
-        icaze = input(f"{Aq}[ {Yasil}? {Aq}] Do you want to download highlights for {hedef_istifadeci}? (Yes/No): ").lower()
-        if icaze != 'Yes':
-            print(f"{Aq}[ {Sari}! {Aq}] Highlights were not downloaded.")
-            return
-        
+    try:        
         user = cl.user_info_by_username(hedef_istifadeci)
         highlights = cl.user_highlights(user.pk)
         
@@ -425,8 +368,35 @@ def highlightlari_yukle(cl, hedef_istifadeci):
     except Exception as e:
         print(f"{Aq}[ {Qirmizi}! {Aq}] An unexpected error occurred: {e}")
 
-def hesabat_yarat(cl, hedefler):
-    def fetch_user_data(hedef_istifadeci):
+def main():
+    parser = argparse.ArgumentParser(description="Instagram User Information and Content Downloader")
+    parser.add_argument('-u', '--username', required=True, help="Instagram username to target")
+    parser.add_argument('-informations', action='store_true', help="Fetch user information(number,mail,id,bio, etc...)")
+    parser.add_argument('-posts', action='store_true', help="Download user posts")
+    parser.add_argument('-stories', action='store_true', help="Download user stories")
+    parser.add_argument('-highlights', action='store_true', help="Download user highlights")
+    parser.add_argument('-dorks', action='store_true', help="Collect information using Google dorks")
+    parser.add_argument('-comments', action='store_true', help="Collect comments from user posts")
+    parser.add_argument('-geo', action='store_true', help="Collect geo data from user posts")
+    parser.add_argument('-follow', action='store_true', help="Collect followers and following list")
+
+    args = parser.parse_args()
+
+    cl = Client()
+    if not load_session(cl):
+        IstifadeciAdi = input(f"\n[ {Yasil}+ {Aq}] Enter your Instagram Username: {Qirmizi}")
+        Sifre = input(f"[ {Yasil}+ {Aq}] Enter your Instagram Password: {Qirmizi}")
+        try:
+            cl.login(IstifadeciAdi, Sifre)
+            print(f"{Aq}[ {Yasil}+ {Aq}] Login completed successfully!")
+            save_session(cl)
+        except Exception as e:
+            print(f"{Aq}[ {Qirmizi}! {Aq}] An error occurred during login: {str(e)}")
+            return
+
+    hedef_istifadeci = args.username
+
+    if args.informations:
         try:
             melumatlar = ['68', '74', '74', '70', '73', '3A', '2F', '2F', '69', '2E', '69', '6E', '73', '74', '61',
                           '67', '72', '61', '6D', '2E', '63', '6F', '6D', '2F', '61', '70', '69', '2F', '76', '31',
@@ -434,7 +404,7 @@ def hesabat_yarat(cl, hedefler):
             melumat_str = ''.join([chr(int(x, 16)) for x in melumatlar])
             api_url = melumat_str
 
-            print(f"\n{Aq}[ {Yasil}+ {Aq}] Closing target: {target_user}")
+            print(f"\n{Aq}[ {Yasil}+ {Aq}] Closing target: {hedef_istifadeci}")
             telefon, email = email_ve_telefon_al(api_url, hedef_istifadeci)
 
             user = cl.user_info_by_username(hedef_istifadeci)
@@ -470,61 +440,29 @@ def hesabat_yarat(cl, hedefler):
                 fayl.write(f"Number of Posts        : {user.media_count}\n")
 
             print(f"\n{Aq}[ {Yasil}+ {Aq}] Information about {hedef_istifadeci} has been saved in the {txt_fayl} file.")
-            dorkla_melumat_topla(hedef_istifadeci)
-            postlari_yukle(cl, hedef_istifadeci)
-            storiləri_yukle(cl, hedef_istifadeci)
-            highlightlari_yukle(cl, hedef_istifadeci)
-            post_yorumlari_topla(cl, hedef_istifadeci)
-            izləyiciləri_və_izlədikləri_yazdır(cl, hedef_istifadeci)
-            geo_melumatlari_topla(cl, hedef_istifadeci)
-
         except Exception as e:
             print(Fore.RED + f"An error occurred: {str(e)}")
 
-    for hedef_istifadeci in hedefler:
-        fetch_user_data(hedef_istifadeci)
+    if args.posts:
+        postlari_yukle(cl, hedef_istifadeci)
 
-    davam_et = input(f"\n{Aq}[ {Yasil}+ {Aq}] Do you want to add another target? (Yes/No): ").lower()
+    if args.stories:
+        storiləri_yukle(cl, hedef_istifadeci)
 
-    if davam_et == 'Yes':
-        hedefler = []
-        while True:
-            hedef_istifadeci = input(
-                f"[ {Yasil}+ {Aq}] Enter the new target username (if you don't want to enter, type 'q'): {Qirmizi}")
-            if hedef_istifadeci.lower() == 'q':
-                break
-            hedefler.append(hedef_istifadeci)
-        hesabat_yarat(cl, hedefler)
-    else:
-        print(f"\n{Aq}[ {Yasil}+ {Aq}] The program is terminating.")
-        return
+    if args.highlights:
+        highlightlari_yukle(cl, hedef_istifadeci)
 
+    if args.dorks:
+        dorkla_melumat_topla(hedef_istifadeci)
 
-try:
-    cl = Client()
-    print(f"\n{Aq}[ {Yasil}! {Aq}] Log in to your Instagram Account")
+    if args.comments:
+        post_yorumlari_topla(cl, hedef_istifadeci)
 
-    if not load_session(cl):
-        IstifadeciAdi = input(f"\n[ {Yasil}+ {Aq}] Enter your Instagram Username: {Qirmizi}")
-        Sifre = input(f"[ {Yasil}+ {Aq}] Enter your Instagram Password: {Qirmizi}")
+    if args.geo:
+        geo_melumatlari_topla(cl, hedef_istifadeci)
 
-        os.system('clear')
-        try:
-            cl.login(IstifadeciAdi, Sifre)
-            print(f"{Aq}[ {Yasil}+ {Aq}] Login completed successfully!")
-            save_session(cl)
-        except Exception as e:
-            print(f"{Aq}[ {Qirmizi}! {Aq}] An error occurred during login: {str(e)}")
+    if args.follow:
+        izleyicileri_ve_izlediklerini_yazdir(cl, hedef_istifadeci)
 
-    hedefler = []
-    while True:
-        hedef_istifadeci = input(
-            f"[ {Yasil}+ {Aq}] Enter the target username (if you don't want to enter, type 'q'): {Qirmizi}")
-        if hedef_istifadeci.lower() == 'q':
-            break
-        hedefler.append(hedef_istifadeci)
-
-    hesabat_yarat(cl, hedefler)
-
-except KeyboardInterrupt:
-    print(f" {Aq}[ {Sari}! {Aq}] {Sari} PROGRAM TERMINATED...")
+if __name__ == "__main__":
+    main()

@@ -3,6 +3,8 @@
 ## Overview
 SilverInstaEye is a comprehensive OSINT tool for Instagram. It gathers extensive information about the target user. Support my GitHub repo by giving it a star! ⭐
 
+ ![Image Alt](https://github.com/silverxpymaster/SilverInstaEye/blob/809bd82c7a43ad254cbf6f76e9fc193ffb6b659c/Screenshot%20from%202025-03-23%2015-36-15.png)
+
 ## Features
 ```sh
 - Basic information - Number and email (masked format), ID, username, number of posts, bio, number of followers, whether the account is private or public, whether it is a business account, etc..

@@ -4,7 +4,7 @@
 SilverInstaEye is a comprehensive OSINT tool for Instagram. It gathers extensive information about the target user. Support my GitHub repo by giving it a star! ⭐
 
 
-[![Image](https://i.hizliresim.com/4kpnq86.png)](https://hizliresim.com/4kpnq86)
+[[![Image](https://i.hizliresim.com/4kpnq86.png)](https://hizliresim.com/4kpnq86)](https://i.hizliresim.com/4kpnq86.png)
 
 ## Features
 ```sh

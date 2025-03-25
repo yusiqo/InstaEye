@@ -9,43 +9,13 @@ import re
 import argparse
 from bs4 import BeautifulSoup
 from colorama import Fore
+from dotenv import load_dotenv
+from telegram import Update
+from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackContext
 
-os.system("cls || clear")
-print(colored("""⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-███████╗██╗██╗    ██╗   ██╗███████╗██████╗ ██╗███╗   ██╗███████╗████████╗ █████╗ ███████╗██╗   ██╗███████╗
-██╔════╝██║██║    ██║   ██║██╔════╝██╔══██╗██║████╗  ██║██╔════╝╚══██╔══╝██╔══██╗██╔════╝╚██╗ ██╔╝██╔════╝
-███████╗██║██║    ██║   ██║█████╗  ██████╔╝██║██╔██╗ ██║███████╗   ██║   ███████║█████╗   ╚████╔╝ █████╗  
-╚════██║██║██║    ╚██╗ ██╔╝██╔══╝  ██╔══██╗██║██║╚██╗██║╚════██║   ██║   ██╔══██║██╔══╝    ╚██╔╝  ██╔══╝  
-███████║██║███████╗╚████╔╝ ███████╗██║  ██║██║██║ ╚████║███████║   ██║   ██║  ██║███████╗   ██║   ███████╗
-╚══════╝╚═╝╚══════╝ ╚═══╝  ╚══════╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚══════╝   ╚═╝   ╚══════╝
-                                                                                                       ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠀⠀⠀⠀⠀⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⡇⠀⠀⢰⡆⢘⣆⠀⠀⡆⠀⢸⠀⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⠀⣆⣧⡤⠾⢷⡚⠛⢻⣏⢹⡏⠉⣹⠟⡟⣾⠳⣼⢦⣀⣰⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠰⣄⡬⢷⣝⢯⣷⢤⣘⣿⣦⣼⣿⣾⣷⣼⣽⣽⣿⣯⡾⢃⣠⣞⠟⠓⢦⣀⠆⠀⠀⡀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠲⣄⣤⣞⡉⠛⢶⣾⡷⠟⣿⣿⣿⣿⣿⣿⣿⡿⣿⣿⣿⡿⢿⡛⠻⠿⣥⣤⣶⠞⠉⢓⣤⡴⢁⠄⠀⠀⠀⠀⠀
-⠀⠀⠀⣄⣠⠞⠉⢛⣻⡿⠛⠁⠀⣸⠯⠈⠀⠁⣴⣿⣿⣿⡶⠤⠽⣇⠈⣿⠀⠀⠈⠙⠻⢶⣾⣻⣭⠿⢫⣀⣴⡶⠃⠀⠀
-⠀⢤⣀⣜⣉⣩⣽⠿⠋⠀⠀⠀⠀⣿⠈⠀⠀⢸⣿⣿⣿⣿⣀⠀⠀⠸⠇⢸⡇⠀⠀⠀⠀⠀⠘⠛⢶⣶⣾⣻⡯⠄⠀⣠⠄
-⠀⠤⠬⢭⣿⣿⠋⠀⠀⠀⠀⠀⠀⢻⡀⠀⠀⠀⢿⣿⣿⣿⡿⠋⠁⠀⠀⣼⠁⠀⠀⠀⠀⠀⢀⣴⣫⣏⣙⠛⠒⠚⠋⠁⠀
-⡔⢀⡵⠋⢧⢹⡀⠀⠀⠀⠀⠀⠀⠈⢷⡀⠀⠀⠀⠈⠉⠉⠀⠀⠀⠀⣰⠏⠀⠀⠀⠀⠀⣠⣾⣿⡛⠛⠛⠓⠦⠀⠀⠀⠀
-⣇⠘⠳⠦⠼⠧⠷⣄⣀⠀⠀⠀⠀⠀⠀⠳⢤⣀⠀⠀⠀⠀⠀⢀⣠⠾⠃⠀⠀⠀⣀⣴⣻⣟⡋⠉⠉⢻⠶⠀⠀⠀⠀⠀⠀
-⠈⠑⠒⠒⠀⠀⢄⣀⡴⣯⣵⣖⣦⠤⣀⣀⣀⠉⠙⠒⠒⠒⠚⠉⢁⣀⣠⢤⣖⣿⣷⢯⡉⠉⠙⣲⠞⠁⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠈⠙⠣⢤⡞⠉⢉⡿⠒⢻⢿⡿⠭⣭⡭⠿⣿⡿⠒⠻⣯⡷⡄⠉⠳⣬⠷⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⠺⠤⣄⣠⡏⠀⠀⡿⠀⠀⠘⡾⠀⢀⣈⡧⠴⠒⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠙⠒⠓⠒⠒⠚⠛⠉⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+load_dotenv()
+TOKEN = os.getenv("BOT_TOKEN")
 
-
-                          Author: SilverX                Tg: t.me/silverxvip
-""",'red'))
-
-Qara = '\033[30m'
-Qirmizi = '\033[1;31m'
-Yasil = '\033[1;32m'
-Sari = '\033[1;33m'
-Mavi = '\033[1;34m'
-Magenta = '\033[1;35m'
-Cy = '\033[1;36m'
-Aq = '\033[1;37m'
 
 SESSION_FILE = 'session.json'
 
@@ -368,101 +338,115 @@ def highlightlari_yukle(cl, hedef_istifadeci):
     except Exception as e:
         print(f"{Aq}[ {Qirmizi}! {Aq}] An unexpected error occurred: {e}")
 
-def main():
-    parser = argparse.ArgumentParser(description="Instagram User Information and Content Downloader")
-    parser.add_argument('-u', '--username', required=True, help="Instagram username to target")
-    parser.add_argument('-informations', action='store_true', help="Fetch user information(number,mail,id,bio, etc...)")
-    parser.add_argument('-posts', action='store_true', help="Download user posts")
-    parser.add_argument('-stories', action='store_true', help="Download user stories(anonim)")
-    parser.add_argument('-highlights', action='store_true', help="Download user highlights")
-    parser.add_argument('-dorks', action='store_true', help="Collect information using Google dorks")
-    parser.add_argument('-comments', action='store_true', help="Collect comments from user posts")
-    parser.add_argument('-geo', action='store_true', help="Collect geo data from user posts")
-    parser.add_argument('-follow', action='store_true', help="Collect followers and following list")
+async def scan(update: Update, context: CallbackContext) -> None:
+    if context.args:
+        username = context.args[0]
+        await update.message.reply_text(f"Tarama için kullanıcı adı: {username}")
+    else:
+        await update.message.reply_text("Lütfen bir kullanıcı adı girin. Örnek: /scan username")
 
-    args = parser.parse_args()
+def main():                                                                                                                
+    app = Application.builder().token(TOKEN).build()
 
-    cl = Client()
-    if not load_session(cl):
-        IstifadeciAdi = input(f"\n[ {Yasil}+ {Aq}] Enter your Instagram Username: {Qirmizi}")
-        Sifre = input(f"[ {Yasil}+ {Aq}] Enter your Instagram Password: {Qirmizi}")
-        try:
-            cl.login(IstifadeciAdi, Sifre)
-            print(f"{Aq}[ {Yasil}+ {Aq}] Login completed successfully!")
-            save_session(cl)
-        except Exception as e:
-            print(f"{Aq}[ {Qirmizi}! {Aq}] An error occurred during login: {str(e)}")
-            return
+    app.add_handler(CommandHandler("scan", scan))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
+    
+    print("Bot çalışıyor...")
+    app.run_polling()
+    # parser = argparse.ArgumentParser(description="Instagram User Information and Content Downloader")
+    # parser.add_argument('-u', '--username', required=True, help="Instagram username to target")
+    # parser.add_argument('-informations', action='store_true', help="Fetch user information(number,mail,id,bio, etc...)")
+    # parser.add_argument('-posts', action='store_true', help="Download user posts")
+    # parser.add_argument('-stories', action='store_true', help="Download user stories(anonim)")
+    # parser.add_argument('-highlights', action='store_true', help="Download user highlights")
+    # parser.add_argument('-dorks', action='store_true', help="Collect information using Google dorks")
+    # parser.add_argument('-comments', action='store_true', help="Collect comments from user posts")
+    # parser.add_argument('-geo', action='store_true', help="Collect geo data from user posts")
+    # parser.add_argument('-follow', action='store_true', help="Collect followers and following list")
 
-    hedef_istifadeci = args.username
+    # args = parser.parse_args()
 
-    if args.informations:
-        try:
-            melumatlar = ['68', '74', '74', '70', '73', '3A', '2F', '2F', '69', '2E', '69', '6E', '73', '74', '61',
-                          '67', '72', '61', '6D', '2E', '63', '6F', '6D', '2F', '61', '70', '69', '2F', '76', '31',
-                          '2F', '75', '73', '65', '72', '73', '2F', '6C', '6F', '6F', '6B', '75', '70', '2F']
-            melumat_str = ''.join([chr(int(x, 16)) for x in melumatlar])
-            api_url = melumat_str
+    # cl = Client()
+    # if not load_session(cl):
+    #     IstifadeciAdi = input(f"\n[ {Yasil}+ {Aq}] Enter your Instagram Username: {Qirmizi}")
+    #     Sifre = input(f"[ {Yasil}+ {Aq}] Enter your Instagram Password: {Qirmizi}")
+    #     try:
+    #         cl.login(IstifadeciAdi, Sifre)
+    #         print(f"{Aq}[ {Yasil}+ {Aq}] Login completed successfully!")
+    #         save_session(cl)
+    #     except Exception as e:
+    #         print(f"{Aq}[ {Qirmizi}! {Aq}] An error occurred during login: {str(e)}")
+    #         return
 
-            print(f"\n{Aq}[ {Yasil}+ {Aq}] Closing target: {hedef_istifadeci}")
-            telefon, email = email_ve_telefon_al(api_url, hedef_istifadeci)
+    # hedef_istifadeci = args.username
 
-            user = cl.user_info_by_username(hedef_istifadeci)
+    # if args.informations:
+    #     try:
+    #         melumatlar = ['68', '74', '74', '70', '73', '3A', '2F', '2F', '69', '2E', '69', '6E', '73', '74', '61',
+    #                       '67', '72', '61', '6D', '2E', '63', '6F', '6D', '2F', '61', '70', '69', '2F', '76', '31',
+    #                       '2F', '75', '73', '65', '72', '73', '2F', '6C', '6F', '6F', '6B', '75', '70', '2F']
+    #         melumat_str = ''.join([chr(int(x, 16)) for x in melumatlar])
+    #         api_url = melumat_str
 
-            print(f"Username              : {user.username}")
-            print(f"Full Name               : {user.full_name}")
-            print(f"Id                    : {user.pk}")
-            print(f"Bio                   : {user.biography}")
-            print(f"Profile Link          : {user.external_url}")
-            print(f"Is it a private account?      : {user.is_private}")
-            print(f"Is it a business account?    : {user.is_business}")
-            print(f"Phone Number       : {telefon}")
-            print(f"Email                : {email}")
-            print(f"Followers Count      : {user.follower_count}")
-            print(f"Following Count      : {user.following_count}")
-            print(f"Number of Posts        : {user.media_count}")
-            print("-" * 50)
+    #         print(f"\n{Aq}[ {Yasil}+ {Aq}] Closing target: {hedef_istifadeci}")
+    #         telefon, email = email_ve_telefon_al(api_url, hedef_istifadeci)
 
-            txt_fayl = f"accaunt_{hedef_istifadeci}.txt"
-            with open(txt_fayl, 'w', encoding='utf-8') as fayl:
-                fayl.write(f"============================== ACCAUNT INFORMATIONS ===============================\n")
-                fayl.write(f"Username              : {user.username}\n")
-                fayl.write(f"Full Name               : {user.full_name}\n")
-                fayl.write(f"Id                    : {user.pk}\n")
-                fayl.write(f"Bio                   : {user.biography}\n")
-                fayl.write(f"Profile Link          : {user.external_url}\n")
-                fayl.write(f"Is it a private account?      : {user.is_private}\n")
-                fayl.write(f"Is it a business account?    : {user.is_business}\n")
-                fayl.write(f"Phone Number       : {telefon}\n")
-                fayl.write(f"Email                : {email}\n")
-                fayl.write(f"Followers Count      : {user.follower_count}\n")
-                fayl.write(f"Following Count      : {user.following_count}\n")
-                fayl.write(f"Number of Posts        : {user.media_count}\n")
+    #         user = cl.user_info_by_username(hedef_istifadeci)
 
-            print(f"\n{Aq}[ {Yasil}+ {Aq}] Information about {hedef_istifadeci} has been saved in the {txt_fayl} file.")
-        except Exception as e:
-            print(Fore.RED + f"An error occurred: {str(e)}")
+    #         print(f"Username              : {user.username}")
+    #         print(f"Full Name               : {user.full_name}")
+    #         print(f"Id                    : {user.pk}")
+    #         print(f"Bio                   : {user.biography}")
+    #         print(f"Profile Link          : {user.external_url}")
+    #         print(f"Is it a private account?      : {user.is_private}")
+    #         print(f"Is it a business account?    : {user.is_business}")
+    #         print(f"Phone Number       : {telefon}")
+    #         print(f"Email                : {email}")
+    #         print(f"Followers Count      : {user.follower_count}")
+    #         print(f"Following Count      : {user.following_count}")
+    #         print(f"Number of Posts        : {user.media_count}")
+    #         print("-" * 50)
 
-    if args.posts:
-        postlari_yukle(cl, hedef_istifadeci)
+    #         txt_fayl = f"accaunt_{hedef_istifadeci}.txt"
+    #         with open(txt_fayl, 'w', encoding='utf-8') as fayl:
+    #             fayl.write(f"============================== ACCAUNT INFORMATIONS ===============================\n")
+    #             fayl.write(f"Username              : {user.username}\n")
+    #             fayl.write(f"Full Name               : {user.full_name}\n")
+    #             fayl.write(f"Id                    : {user.pk}\n")
+    #             fayl.write(f"Bio                   : {user.biography}\n")
+    #             fayl.write(f"Profile Link          : {user.external_url}\n")
+    #             fayl.write(f"Is it a private account?      : {user.is_private}\n")
+    #             fayl.write(f"Is it a business account?    : {user.is_business}\n")
+    #             fayl.write(f"Phone Number       : {telefon}\n")
+    #             fayl.write(f"Email                : {email}\n")
+    #             fayl.write(f"Followers Count      : {user.follower_count}\n")
+    #             fayl.write(f"Following Count      : {user.following_count}\n")
+    #             fayl.write(f"Number of Posts        : {user.media_count}\n")
 
-    if args.stories:
-        storiləri_yukle(cl, hedef_istifadeci)
+    #         print(f"\n{Aq}[ {Yasil}+ {Aq}] Information about {hedef_istifadeci} has been saved in the {txt_fayl} file.")
+    #     except Exception as e:
+    #         print(Fore.RED + f"An error occurred: {str(e)}")
 
-    if args.highlights:
-        highlightlari_yukle(cl, hedef_istifadeci)
+    # if args.posts:
+    #     postlari_yukle(cl, hedef_istifadeci)
 
-    if args.dorks:
-        dorkla_melumat_topla(hedef_istifadeci)
+    # if args.stories:
+    #     storiləri_yukle(cl, hedef_istifadeci)
 
-    if args.comments:
-        post_yorumlari_topla(cl, hedef_istifadeci)
+    # if args.highlights:
+    #     highlightlari_yukle(cl, hedef_istifadeci)
 
-    if args.geo:
-        geo_melumatlari_topla(cl, hedef_istifadeci)
+    # if args.dorks:
+    #     dorkla_melumat_topla(hedef_istifadeci)
 
-    if args.follow:
-        izleyicileri_ve_izlediklerini_yazdir(cl, hedef_istifadeci)
+    # if args.comments:
+    #     post_yorumlari_topla(cl, hedef_istifadeci)
+
+    # if args.geo:
+    #     geo_melumatlari_topla(cl, hedef_istifadeci)
+
+    # if args.follow:
+    #     izleyicileri_ve_izlediklerini_yazdir(cl, hedef_istifadeci)
 
 if __name__ == "__main__":
     main()
